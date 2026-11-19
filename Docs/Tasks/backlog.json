@@ -1,0 +1,214 @@
+{
+  "labels": [
+    { "name": "type:feature", "color": "1D76DB", "description": "Нова функціональність" },
+    { "name": "type:chore", "color": "C5DEF5", "description": "Інфраструктура, налаштування, техборг" },
+    { "name": "type:bug", "color": "D73A4A", "description": "Помилка" },
+    { "name": "type:docs", "color": "0075CA", "description": "Документація" },
+    { "name": "type:spike", "color": "FBCA04", "description": "Дослідження / прототип з таймбоксом" },
+    { "name": "area:core", "color": "5319E7", "description": "Core, інфраструктура проєкту" },
+    { "name": "area:level", "color": "5319E7", "description": "Сцени, greybox, локації" },
+    { "name": "area:player", "color": "5319E7", "description": "First-person контролер медика" },
+    { "name": "area:interaction", "color": "5319E7", "description": "Interactable, предмети, двері" },
+    { "name": "area:stretcher", "color": "5319E7", "description": "Ноші та перенесення" },
+    { "name": "area:vehicle", "color": "5319E7", "description": "Швидка допомога" },
+    { "name": "area:npc", "color": "5319E7", "description": "NPC-пацієнт, AI, навігація" },
+    { "name": "area:mission", "color": "5319E7", "description": "Mission flow, Mission Director, оцінювання" },
+    { "name": "area:network", "color": "5319E7", "description": "Netcode, сесії, реплікація" },
+    { "name": "area:ui", "color": "5319E7", "description": "UI / HUD" },
+    { "name": "priority:P0", "color": "B60205", "description": "Блокер / критичний шлях MVP" },
+    { "name": "priority:P1", "color": "D93F0B", "description": "Важливо для MVP" },
+    { "name": "priority:P2", "color": "FEF2C0", "description": "Після MVP / можна відкласти" },
+    { "name": "mvp", "color": "0E8A16", "description": "Входить в MVP (GDD §16)" }
+  ],
+  "milestones": [
+    { "key": "P0", "title": "Phase 0 — Підготовка (тиждень 1)", "description": "Рушій, Git, GDD, базовий проєкт, greybox, FP-камера. Gate: проєкт відкривається і збирається на чистій машині." },
+    { "key": "P1", "title": "Phase 1 — Core movement (тижні 2–3)", "description": "FP-контролер медиків, взаємодії, піднімання реквізиту, перший UI. Gate: усе керується без мережі." },
+    { "key": "P2", "title": "Phase 2 — Ноші та швидка (тижні 4–5)", "description": "Ноші, слоти рук, спільне перенесення, посадка в авто, базове водіння. Gate: повний локальний цикл евакуації NPC." },
+    { "key": "P3", "title": "Phase 3 — Multiplayer foundation (тижні 6–8)", "description": "Мережевий co-op 1–4 медики, Lobby/Session, синхронізація NPC, нош, дверей, авто. Gate: 2 медики онлайн проходять тестову NPC-місію." },
+    { "key": "P4", "title": "Phase 4 — NPC та місія 1 (тижні 9–13)", "description": "NPC state machine, діалоги, Mission Director, квартира/лікарня, рейтинг. Gate: повний вертикальний зріз проти NPC." },
+    { "key": "P5", "title": "Phase 5 — Art & audio pass (тижні 14–16)", "description": "Швидка, персонажі, FP-руки, анімації, звук, UI polish. Gate: 30-хв playtest із друзями." },
+    { "key": "P6", "title": "Phase 6 — Додатковий контент (тижні 17–20)", "description": "Ще 2 місії, 3–4 архетипи NPC, несправності швидкої, optional economy. Gate: повторюваність і стабільність." },
+    { "key": "P7", "title": "Phase 7 — Closed Alpha (тижні 21–24)", "description": "Багфікс, оптимізація, мережеві тести, аналітика, Steam playtest. Gate: co-op стабільно проходить у різних групах." }
+  ],
+  "issues": [
+    {
+      "id": "LC-001",
+      "title": "LC-001: Визначити рушій і створити базовий проєкт та Git repo",
+      "milestone": "P0",
+      "labels": ["type:chore", "area:core", "priority:P0", "mvp"],
+      "summary": "Закрити суперечність GDD щодо рушія, зафіксувати рішення в ADR, створити Unity-проєкт, налаштувати Git/LFS, структуру папок (§14), CLAUDE.md і трекінг.",
+      "criteria": [
+        "Вибір рушія задокументовано в `Docs/Architecture/ADR-001-engine.md` (Unity 6.6 `6000.6.10f1` + URP + NGO) з критеріями валідації spike (FP-контролер, ноші-фізика, NPC на NavMesh, мережа на 2 гравців)",
+        "Git + Git LFS: `.gitignore` і `.gitattributes` під Unity; гілки `main` / `develop` / `feature/LC-xxx`",
+        "Структура папок з GDD §14 створена (`Assets/_Game/...`, `Docs/...`)",
+        "`CLAUDE.md` з правилами §20: first-person only, 1–4 медики проти NPC, host-authoritative, без зміни версії рушія/пакетів/ProjectSettings без дозволу, Definition of Done",
+        "Бекслог LC-001…LC-011 заведено як GitHub Issues з приймальними критеріями",
+        "**Gate:** проєкт відкривається і збирається на чистому середовищі (свіжий clone → batchmode build Windows, EditMode smoke-тест зелений)"
+      ],
+      "gdd": "§13, §14, §17 (етап 0), §19, §20",
+      "deps": "—"
+    },
+    {
+      "id": "LC-002",
+      "title": "LC-002: Створити Greybox Apartment scene",
+      "milestone": "P0",
+      "labels": ["type:feature", "area:level", "priority:P0", "mvp"],
+      "summary": "Greybox-квартира для першого прототипу (рівень 1 «Неправильний номер»): прості модульні примітиви, масштаб під ноші та FP-камеру.",
+      "criteria": [
+        "Є кухня, коридор, кімната, вихід, місце для нош і точка появи швидкої",
+        "Двері та проходи мають ширину, достатню для нош із двома медиками (з невеликим запасом для комічних зіткнень, без регулярних блокувань)",
+        "Запечена NavMesh-сітка для NPC (AI Navigation)",
+        "Сцена в `Assets/_Game/Scenes/TestYard/` або `Mission_01/`, відкривається без помилок у консолі"
+      ],
+      "gdd": "§9 (рівень 1), §11.1, §16, §19",
+      "deps": "LC-001"
+    },
+    {
+      "id": "LC-003",
+      "title": "LC-003: Зробити first-person MedicController",
+      "milestone": "P1",
+      "labels": ["type:feature", "area:player", "priority:P0", "mvp"],
+      "summary": "First-person контролер медика на Input System: ходьба, біг, присідання, взаємодія. Без мережі.",
+      "criteria": [
+        "Рух, біг, присідання, взаємодія (Interact) через Input System",
+        "Камера тільки від першої особи; жодного перемикання на третю особу",
+        "Без мережі (локальний контролер; мережа — LC-009)",
+        "Налаштування швидкостей/чутливості — через ScriptableObject або SerializeField",
+        "Рух не залежить від FPS (перевірка 30/60/144)",
+        "Spike-критерій V1 з ADR-001 підтверджено"
+      ],
+      "gdd": "§7.1, §13.1, §16, §19",
+      "deps": "LC-001"
+    },
+    {
+      "id": "LC-004",
+      "title": "LC-004: Зробити NPCPatientController та базову state machine",
+      "milestone": "P2",
+      "labels": ["type:feature", "area:npc", "priority:P0", "mvp"],
+      "summary": "NPC-пацієнт на NavMesh з явною state machine (Idle/Talk/Refuse/Follow/Evade/Transported/HandedOver).",
+      "criteria": [
+        "NPC може чекати, спілкуватися, відмовлятися, співпрацювати та за сценарієм намагатися втекти",
+        "Стани й переходи відповідають таблиці GDD §8.1; кожен стан має читабельний сигнал для гравця",
+        "Unstuck-таймер / safe recovery, якщо NPC застряг у геометрії",
+        "Параметри архетипу (довіра, схильність до втечі) — через ScriptableObject `PatientArchetype`",
+        "EditMode-тести переходів state machine",
+        "Spike-критерій V3 з ADR-001 підтверджено"
+      ],
+      "gdd": "§6.4, §8.1, §14.1, §15, §19",
+      "deps": "LC-002, LC-005"
+    },
+    {
+      "id": "LC-005",
+      "title": "LC-005: Реалізувати Interactable interface",
+      "milestone": "P1",
+      "labels": ["type:feature", "area:interaction", "priority:P0", "mvp"],
+      "summary": "Спільний контракт взаємодії (press / hold / pick up / use) для предметів, дверей і нош.",
+      "criteria": [
+        "Предмети, двері та ноші взаємодіють через спільний контракт (`IInteractable`)",
+        "Три тестові об'єкти: двері, сумка, ноші (заглушка)",
+        "Кожна взаємодія має підказку (prompt) і аудіо/візуальний фідбек-хук",
+        "Контракт готовий до мережевої обгортки (намір → валідація на хості), без прямих RPC з UI",
+        "EditMode-тести базових сценаріїв"
+      ],
+      "gdd": "§7.1, §14.2, §19, §20.3",
+      "deps": "LC-003"
+    },
+    {
+      "id": "LC-006",
+      "title": "LC-006: Зробити Stretcher prototype",
+      "milestone": "P2",
+      "labels": ["type:feature", "area:stretcher", "priority:P0", "mvp"],
+      "summary": "Фізичні ноші з кількома ручками, станами і спільним перенесенням.",
+      "criteria": [
+        "Двоє гравців можуть взяти ручки, нести й поставити ноші",
+        "Один гравець може тягнути ноші повільніше, з більшим розгойдуванням",
+        "Стани: складені → розкладені → зайняті пацієнтом → підняті → закріплені в авто",
+        "Зіткнення з дверима/стінами створюють затримки, але є assisted carry / reset, щоб не блокувати прохід",
+        "Spike-критерій V2 з ADR-001 підтверджено"
+      ],
+      "gdd": "§7.2, §15, §18.2, §19",
+      "deps": "LC-005"
+    },
+    {
+      "id": "LC-007",
+      "title": "LC-007: Зробити Ambulance prototype",
+      "milestone": "P2",
+      "labels": ["type:feature", "area:vehicle", "priority:P0", "mvp"],
+      "summary": "Базова швидка: керування від першої особи, двері, слот для нош.",
+      "criteria": [
+        "Посадка водія, керування (газ, гальмо, кермо, задній хід, сирена)",
+        "Камера водія — тільки від першої особи; без зовнішніх камер",
+        "Задні двері відчиняються/зачиняються через Interactable",
+        "Слот для нош: ноші з пацієнтом фіксуються в ігровій системі",
+        "Параметри керованості — через `VehicleDefinition` (ScriptableObject)"
+      ],
+      "gdd": "§7.5, §11.1, §14.1, §19",
+      "deps": "LC-005, LC-006"
+    },
+    {
+      "id": "LC-008",
+      "title": "LC-008: Додати локальний PatientTransferFlow",
+      "milestone": "P2",
+      "labels": ["type:feature", "area:mission", "priority:P0", "mvp"],
+      "summary": "Локальний цикл місії від брифінгу до передачі в лікарні та простого звіту.",
+      "criteria": [
+        "Місія проходить від spawn до hospital handoff",
+        "Етапи: брифінг → прибуття → контакт → евакуація → транспортування → передача → результат",
+        "Простий екран результату (оцінка за критеріями §10.1 як стартова гіпотеза)",
+        "Місія налаштовується через `MissionDefinition` (ScriptableObject)",
+        "Gate Phase 2: повний локальний цикл евакуації NPC без ручного втручання"
+      ],
+      "gdd": "§4, §10.1, §14.1, §16, §19",
+      "deps": "LC-004, LC-006, LC-007"
+    },
+    {
+      "id": "LC-009",
+      "title": "LC-009: Під'єднати мережеву сесію та синхронізувати медиків і NPC",
+      "milestone": "P3",
+      "labels": ["type:feature", "area:network", "priority:P0", "mvp"],
+      "summary": "NGO + Multiplayer Services (Sessions/Relay): приватна сесія, реплікація медиків, NPC, нош, дверей і швидкої з host-авторитетом.",
+      "criteria": [
+        "2–4 медики бачать узгоджений стан NPC, нош, дверей і швидкої",
+        "Критичні дії перевіряються авторитетною стороною (хто / право / стан / повтор)",
+        "Фізика тільки на хості (`NetworkRigidbody` + `NetworkTransform`)",
+        "Приватна сесія за кодом через Multiplayer Services SDK",
+        "Перевірено через Multiplayer Play Mode, включно зі штучним lag 150 мс",
+        "Spike-критерій V4 з ADR-001 підтверджено"
+      ],
+      "gdd": "§13.2, §13.4, §14.2, §18.1, §19",
+      "deps": "LC-008"
+    },
+    {
+      "id": "LC-010",
+      "title": "LC-010: Зробити першу мережеву NPC-місію",
+      "milestone": "P3",
+      "labels": ["type:feature", "area:mission", "area:network", "priority:P0", "mvp"],
+      "summary": "PatientTransferFlow у мережі: повна місія для 2 медиків проти NPC.",
+      "criteria": [
+        "2 медики + NPC можуть пройти повну місію без блокуючих багів",
+        "Гравець-пацієнт не входить до першої версії",
+        "Від'єднання хоста коректно завершує матч з повідомленням",
+        "Тест-сценарії T2, T4, T5, T8 з `Docs/TestPlans` пройдено",
+        "Gate Phase 3: 2 медики онлайн проходять тестову NPC-місію"
+      ],
+      "gdd": "§16.1, §18.1, §19",
+      "deps": "LC-009"
+    },
+    {
+      "id": "LC-011",
+      "title": "LC-011: Додати базову подію несправності швидкої та NPC escape opportunity",
+      "milestone": "P6",
+      "labels": ["type:feature", "area:vehicle", "area:npc", "priority:P1", "mvp"],
+      "summary": "Одна-дві події несправності (не заводиться / прокол колеса) з короткою командною мінігрою та шансом втечі NPC.",
+      "criteria": [
+        "На зупинці швидкої медики вирішують коротку командну задачу",
+        "Шанс втечі NPC залежить від архетипу й не створює softlock",
+        "Перед спробою втечі NPC подає читабельний сигнал; у медиків є зрозумілий counterplay",
+        "Для прототипу — 2 типи подій: «не заводиться/довго заводиться» та «прокол колеса»",
+        "Ремонт абстрактний, без реальних інструкцій"
+      ],
+      "gdd": "§7.5, §7.6, §16, §18.2, §19",
+      "deps": "LC-007, LC-004"
+    }
+  ]
+}

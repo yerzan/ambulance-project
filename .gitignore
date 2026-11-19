@@ -136,3 +136,35 @@ crashlytics-build.properties
 
 # Auto-generated cache in Assets folder
 /[Aa]ssets/[Ss]ceneDependencyCache*
+
+# ---------------------------------------------------------------
+# LAST CALL project-specific rules
+# ---------------------------------------------------------------
+# IDEs
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+*.code-workspace
+
+# OS junk
+.DS_Store
+Thumbs.db
+desktop.ini
+~$*
+
+# Local test / CI outputs
+/TestResults/
+/CodeCoverage/
+*.trx
+test-results*.xml
+
+# Multiplayer Play Mode virtual players
+/[Ll]ibrary/VP/
+
+# Secrets — never commit tokens, keys or service credentials
+.env
+.env.*
+*.pem
+*.key
+secrets/
